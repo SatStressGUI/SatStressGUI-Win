@@ -1850,9 +1850,9 @@ class PointPanel(SatPanel):
         self.updating = False
         for i in range(1, self.rows + 1):
             self.parameters['orbit'][i].Bind(wx.EVT_KILL_FOCUS, lambda evt, row = i: self.on_orbit_update(evt, row))
-            self.parameters['orbit'][i].Bind(wx.EVT_TEXT, lambda evt, row = i: self.on_orbit_update(evt, row))
+            self.parameters['orbit'][i].Bind(wx.EVT_TEXT_ENTER, lambda evt, row = i: self.on_orbit_update(evt, row))
             self.parameters['t'][i].Bind(wx.EVT_KILL_FOCUS, lambda evt, row = i: self.on_t_update(evt, row))
-            self.parameters['t'][i].Bind(wx.EVT_TEXT, lambda evt, row = i: self.on_t_update(evt, row))
+            self.parameters['t'][i].Bind(wx.EVT_TEXT_ENTER, lambda evt, row = i: self.on_t_update(evt, row))
 
 
     #updates the orbit text ctrls when t is changed
@@ -4200,7 +4200,8 @@ class SatStressPanel(wx.Panel):
             p.update_parameters()
         if isinstance(p, PlotPanel):
             p.plot()
-    
+
+#Wrapper  for Panel that holds everything
 class SatStressFrame(wx.Frame):
     """
     Actually holds all the tabs? Wrapper for Panel that holds everythings
@@ -4278,13 +4279,14 @@ class SatStressFrame(wx.Frame):
 
         self.SetMenuBar(menubar)
 
+        #sets up keyboard shortcut to close the program (ctrl-w)
         exit_id = wx.NewId()
         wx.EVT_MENU(self, exit_id, self.exit)
         accel = wx.AcceleratorTable([
             (wx.ACCEL_CTRL, ord('W'), exit_id)])
         self.SetAcceleratorTable(accel)
         
-        # Bind our events from the close dialog 'x' on the frame
+        # Upon a close event bind our events from the close dialog 'x' on the frame
         self.Bind(wx.EVT_CLOSE, self.OnCloseFrame)
 
         # SetSizeHints(minW, minH, maxW, maxH)
@@ -4416,12 +4418,9 @@ class SatStressFrame(wx.Frame):
             self.exit(event)
 
     def exit(self, evt):
-        """ seems like a 
-        """
         sys.exit(0)
 
 # ===============================================================================
-# 
 class SatStressApp(wx.App):
     def OnInit(self):
         self.frame = SatStressFrame(None, title=u'SatStressGUI V4.0', size=(800,800))
@@ -4431,7 +4430,7 @@ class SatStressApp(wx.App):
 
 def main():
     #make Mac OS app be able to run calcLoveWahr4Layer from Resources
-    #directory in application bundle
+    #Directory in application bundle
     os.environ['PATH'] += os.path.pathsep+os.path.abspath(os.curdir)
     app = SatStressApp(1) # The 0 aka false parameter means "don't redirect stdout and stderr to a window"    app.MainLoop()
     app.MainLoop()
