@@ -286,7 +286,7 @@ class SatelliteCalculation(object):
         except:
             return default_value
 
-    # constructs a satellite from a file if not all parameters are inputted
+    # constructs a satellite from a file if not all parameters are inputed
     def get_satellite(self):
         if self.satellite_changed or not self.satellite:
             self.mk_satellite()
@@ -384,7 +384,7 @@ class SatelliteCalculation(object):
         if v:
             self.parameters[p] = "%g" % (v*seconds_in_year)
 
-    # converts seconds to years in the paramters
+    # converts seconds to years in the parameters
     def parameter_secs2yrs(self, p):
         v = self.get_parameter(float, p)
         if v:
@@ -1018,7 +1018,7 @@ def add_radiobox2_to_sizer(parent, sz, parameter, description, choices):
     sz.Add(parameters[parameter], flag=wx.EXPAND|wx.ALL)
     return parameters
 
-#adds given paramters as static text to the GUI
+#adds given parameters as static text to the GUI
 def add_static_texts(parent, sz, parameters_d):
     sts = [ wx.StaticText(parent, label=d, style=wx.TE_PROCESS_ENTER) for p, d in parameters_d ]
     for st in sts:
@@ -1256,24 +1256,24 @@ class StressListPanel(SatPanel):
             0, wx.ALL|wx.EXPAND)
         topsizer.AddSpacer(10)
 
-        sz.AddSpacer(23)
+        sz.AddSpacer(10)
         
         # for Diurnal
         self.parameters = add_checkboxes_to_sizer(self, sz, [ ('Diurnal', 'Diurnal') ])
-        sz.AddSpacer(8)
+        sz.AddSpacer(10)
         
         # for NSR
         self.parameters.update(add_checkboxes_to_sizer(self, sz, 
             [ ('Nonsynchronous Rotation', 'Nonsynchronous Rotation') ]))
 
-        sz.AddSpacer(8)
+        sz.AddSpacer(5)
         # Added this text to provide users with important information. -PS 2016
         sz.Add(wx.StaticText(self, label=u'To input custom Love numbers, use the format <Re> +/- <Im>j.'))
         sz.Add(wx.StaticText(self, label=u'Do not use scientific notation when inputting custom Love numbers.'))
         sz.Add(wx.StaticText(self, label=u'"3.0-1.0e-03j" should be written as "3.0-0.001j".'))
         sz.Add(wx.StaticText(self, label=u"If no Love Numbers are input, the program will calculate them automatically."))
 
-        sz.AddSpacer(8)
+        sz.AddSpacer(10)
         
         # for Diurnal w/ Obliquity
         self.parameters.update(add_checkboxes_to_sizer(self, sz,
@@ -1291,7 +1291,7 @@ class StressListPanel(SatPanel):
         DiObliq_sz.AddSpacer(5)
         # include degree of obliquity for Diurnal w/ Obliquity
         obliq_sz = wx.BoxSizer(orient=wx.HORIZONTAL)
-        obliq_sz.AddSpacer(30)
+        obliq_sz.AddSpacer(28)
         self.obliq_label = wx.StaticText(self, label=u'Degree of Obliquity [°]  ')
         obliq_sz.Add(self.obliq_label, flag=wx.ALIGN_CENTER_HORIZONTAL)
         obliq_sz.Add(filler)
@@ -1299,9 +1299,9 @@ class StressListPanel(SatPanel):
             [ ('obliquity', 'obliquity') ]))
         obliq_sz.AddSpacer(5)
         DiObliq_sz.Add(obliq_sz)
-
         sz.Add(DiObliq_sz)
 
+        #For Ice Shell Volume Change
         self.parameters.update(add_checkboxes_to_sizer(self, sz,
             [ ('Ice Shell Thickening', 'Ice Shell Thickening') ]))
         ISTParams_sz = wx.BoxSizer(wx.VERTICAL)
@@ -1323,7 +1323,9 @@ class StressListPanel(SatPanel):
         sz.Add(ISTParams_sz)
 
         # Removed the diffusivity option from the GUI because it is not implemented. -PS 2016
-        
+        sz.AddSpacer(10)
+
+        #For Polar Wander
         self.parameters.update(add_checkboxes_to_sizer(self, sz, [ ('Polar Wander', 'Polar Wander') ]))
 
         sz.Add(wx.StaticText(self, label=u"Polar wander is not completely tested, so it may not be accurate"))
@@ -1364,6 +1366,8 @@ class StressListPanel(SatPanel):
         self.TidalLock = wx.CheckBox(self, wx.ID_ANY, style=wx.ALIGN_RIGHT, label=u'Assume tidally locked satellite')
         self.TidalLock.SetValue(True)
         self.Bind(wx.EVT_CHECKBOX, self.Lock_Body, self.TidalLock)
+        sz.AddSpacer(10)
+        
         # Despinning could be implemented as a separate stress, but I did not have time to do this. -PS 2016
         self.DespinningBox = wx.CheckBox(self, wx.ID_ANY, style=wx.ALIGN_RIGHT, label=u'Despinning [hours]')
         self.Bind(wx.EVT_CHECKBOX, self.Despinning, self.DespinningBox)
@@ -1383,8 +1387,33 @@ class StressListPanel(SatPanel):
             (self.DespinningBox, 0, wx.ALL|wx.EXPAND), (self.InitialSpinPeriod, 0, wx.ALL|wx.EXPAND), (self.FinalSpinPeriod, 0, wx.ALL|wx.EXPAND)])
 
         sz.Add(Polargrid)
-
         sz.AddSpacer(15)
+
+         #For Orbital Recession
+        self.parameters.update(add_checkboxes_to_sizer(self, sz,
+            [ ('Orbital Recession', 'Orbital Recession') ]))
+        OrbRec_sz = wx.BoxSizer(wx.VERTICAL)
+        initSemiMajor_sz = wx.BoxSizer(orient=wx.HORIZONTAL)
+        initSemiMajor_sz.AddSpacer(28) 
+        self.init_label = wx.StaticText(self,
+           label=u'Initial Position of Semi-Major Axis  ')
+        initSemiMajor_sz.Add(self.init_label, flag=wx.ALIGN_CENTER_VERTICAL)
+        initSemiMajor_sz.AddSpacer(16)
+        self.parameters.update(add_text_ctrls(self, initSemiMajor_sz,
+           [ ('initpos_arg', 'initpos_arg') ]))
+        OrbRec_sz.Add(initSemiMajor_sz)
+        OrbRec_sz.AddSpacer(5)
+        finSemiMajor_sz = wx.BoxSizer(orient=wx.HORIZONTAL)
+        finSemiMajor_sz.AddSpacer(28)
+        self.fin_label = wx.StaticText(self, label=u'Final Position of Semi-Major Axis  ')
+        finSemiMajor_sz.Add(self.fin_label, flag=wx.ALIGN_CENTER_VERTICAL)
+        finSemiMajor_sz.AddSpacer(20)
+        self.parameters.update(add_text_ctrls(self, finSemiMajor_sz,
+            [('finpos_arg', 'finpos_arg')]))
+        OrbRec_sz.Add(finSemiMajor_sz)
+        sz.Add(OrbRec_sz)
+        sz.AddSpacer(10)
+
         save_love_bt = wx.Button(self, label='Save Love numbers')
         wx.EVT_BUTTON(self, save_love_bt.GetId(), self.on_save_love)
         sz.Add(save_love_bt)
@@ -1447,6 +1476,7 @@ class StressListPanel(SatPanel):
         self.disable_istparams()
         self.disable_obliq()
         self.disable_polar()
+        self.disable_orbitalrec()
 
 
     # These functions disable and enable various stress parameters on the GUI. -PS 2016
@@ -1496,6 +1526,16 @@ class StressListPanel(SatPanel):
     def enable_obliq(self):
         for e in [self.obliq_label, self.parameters['obliquity'],
                self.periapsis_label, self.parameters['periapsis_arg'] ]:
+            e.Enable()
+
+    def disable_orbitalrec(self):
+        for e in [self.init_label, self.parameters['initpos_arg'],
+               self.fin_label, self.parameters['finpos_arg'] ]:
+            e.Disable()
+        
+    def enable_orbitalrec(self):
+        for e in [self.init_label, self.parameters['initpos_arg'],
+               self.fin_label, self.parameters['finpos_arg'] ]:
             e.Enable()
 
     def enable_polar(self):
@@ -4287,7 +4327,7 @@ class SatStressFrame(wx.Frame):
         self.SetAcceleratorTable(accel)
         
         # Upon a close event bind our events from the close dialog 'x' on the frame
-        self.Bind(wx.EVT_CLOSE, self.OnCloseFrame)
+        self.Bind(wx.EVT_CLOSE, self.onCloseFrame)
 
         # SetSizeHints(minW, minH, maxW, maxH)
         # This function effectively enforces a lower bound to SatStressGUI window resizing.
@@ -4308,6 +4348,13 @@ class SatStressFrame(wx.Frame):
                     action=self.saveFile)
         except Exception, e:
             error_dialog(self, str(e), u'Save Error')
+
+    def saveFile(self,filename):
+        f = open(filename,'w')
+        for p,v in self.p.sc.parameters.items():
+            if v or v == 'to_plot_many_cycloids': #Don't want to save to_plot_many_cycloids simply because this option shouldn't be loaded since the cycloids from the cycloids file aren't saved
+                f.write(p + ' = ' + str(v) + '\n')
+        f.close()
 
     def onLoad(self,evt):
         try:
@@ -4336,13 +4383,6 @@ class SatStressFrame(wx.Frame):
         self.p.sc.nsr_period_seconds2years()
         self.p.cy.updateFields() #Update the text fields in cycloids tab.
         self.p.nb.GetCurrentPage().update_parameters() #Update the current page's fields
-
-    def saveFile(self,filename):
-        f = open(filename,'w')
-        for p,v in self.p.sc.parameters.items():
-            if v or v == 'to_plot_many_cycloids': #Don't want to save to_plot_many_cycloids simply because this option shouldn't be loaded since the cycloids from the cycloids file aren't saved
-                f.write(p + ' = ' + str(v) + '\n')
-        f.close()
 
     def onQuit(self, evt):
         self.Close()
@@ -4402,7 +4442,7 @@ class SatStressFrame(wx.Frame):
     
     # Makes sure the user was intending to quit the application
     # at some point, make this conditional to if not changes have been made, no popup
-    def OnCloseFrame(self, event):
+    def onCloseFrame(self, event):
         if self.p.sc.saveable_changed():
             dialog = wx.MessageDialog(self,
                 message = "To save your parameters and/or plot, return to the relevant tab and click the appropriate button",
