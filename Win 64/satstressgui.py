@@ -2120,7 +2120,7 @@ class GridCalcPanel(SatPanel):
         sz.AddSpacer(15)
         sz.Add(gmcp)
         sz.AddSpacer(15)
-        sz.Add(wx.StaticText(self, label = u'Note: Number of latitude and longitude grid points must be equal'))
+        sz.Add(wx.StaticText(self, label = u'Note: Number of latitude and longitude grid points must be equal. Set value for latitude and longitude will automatically update'))
         sz.Add(wx.StaticText(self, label=u"Sometimes the map will not generate for certain diurnal orbit values."))
         sz.Add(wx.StaticText(self, label=u"If this happens, just change your number of increments or end value."))
 
@@ -2144,6 +2144,7 @@ class GridCalcPanel(SatPanel):
         self.parameters['LON_MIN'].SetValue('-180')
         self.parameters['LON_MAX'].SetValue('180')
         self.parameters['LON_NUM'].SetValue('10')
+        self.parameters['LON_NUM'].Disable()
 
 
     def enable_nsr(self):
@@ -2181,6 +2182,7 @@ class GridCalcPanel(SatPanel):
             sts.Disable()
 
     def update_parameters(self):
+        self.parameters['LON_NUM'].SetValue(self.parameters['LAT_NUM'].GetValue())
         super(GridCalcPanel, self).update_parameters()
         if self.sc.parameters.get('Nonsynchronous Rotation', False):
             self.enable_nsr()
