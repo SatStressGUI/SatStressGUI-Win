@@ -2144,8 +2144,11 @@ class GridCalcPanel(SatPanel):
         self.parameters['LON_MIN'].SetValue('-180')
         self.parameters['LON_MAX'].SetValue('180')
         self.parameters['LON_NUM'].SetValue('10')
+        self.parameters['LAT_NUM'].Bind(wx.EVT_TEXT,lambda evt:self.on_gridPoint_update())
         self.parameters['LON_NUM'].Disable()
 
+    def on_gridPoint_update(self):
+        self.parameters['LON_NUM'].SetValue(self.parameters['LAT_NUM'].GetValue())
 
     def enable_nsr(self):
         for p in ['TIME_MIN', 'nsr_time', 'TIME_NUM']:
