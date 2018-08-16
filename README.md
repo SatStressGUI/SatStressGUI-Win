@@ -2,8 +2,7 @@
 
 This repository contains the code for SatStressGUI, a program which models stresses in icy satellites.
 
-To use this program, download the package and run the satstressgui executable file located in Contents/MacOS.
-Instructions for using the program can be found in the Help menu or by pressing f1.
+To use this program, download the package and to run simply open up a command prompt, cd into the Win 64 folder and in the command prompt run "python run.py". Instructions for using the program can be found in the Help menu or by pressing f1.
 
 Future updates to this program should either be tested in a branch before being merged into Master upon final release, or be hosted in separate repositories.
 
